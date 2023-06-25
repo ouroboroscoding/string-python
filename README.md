@@ -1,10 +1,10 @@
-# Ouroboros Coding Strings
+# Strings by Ouroboros Coding
 [![pypi version](https://img.shields.io/pypi/v/Strings-OC.svg)](https://pypi.org/project/Strings-OC) ![MIT License](https://img.shields.io/pypi/l/Strings-OC.svg)
 
 Generic functions for dealing with and generating strings
 
 ## Requires
-Config-OC requires python 3.10 or higher
+Strings-OC requires python 3.10 or higher
 
 ## Installation
 ```bash
