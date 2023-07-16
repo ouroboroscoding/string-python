@@ -39,6 +39,30 @@ Returns only the digits, i.e. the numeric characters, in the given string as a n
 '17'
 ```
 
+### from_file
+Returns the entire file as a string
+
+```python
+>>> from strings import from_file
+>>> from_file('version.dat')
+'1.0.1\n'
+```
+
+Assuming `version.dat` contained the following
+
+```
+1.0.1
+
+```
+
+If the file doesn't exist, `from_file` returns `None`. This can be changed by passing a second argument to be the default value.
+
+```python
+>>> from strings import from_file
+>>> from_file('doesnotexist', '1.0.0')
+'1.0.0'
+```
+
 ### normalize
 Returns, as well as possible, a normalized string converted from another string containing characters with special accents. It does this by finding special characters and converting them into their simpler, single character, versions. This is useful for things like automaticlaly generating urls, or for generating from unicode into ascii.
 ```python
@@ -138,6 +162,18 @@ False
 ValueError: "2" is not a valid boolean representation in to_bool
 ```
 
+### to_file
+Stores a string in a file, overwriting the existing contents, or creating the file if it didn't exist.
+```python
+>>> from strings import to_file
+>>> to_file('version.dat', '1.1.0')
+True
+```
+The `version.dat` file will now contain the following
+```
+1.1.0
+```
+
 ### uuid_add_dashes
 Used to add dashes "-" to a string representation of a UUID that has none.
 ```python
@@ -152,4 +188,16 @@ Used to strip dashes "-" from a string representation of a UUID that has them.
 >>> from strings import uuid_strip_dashes
 >>> uuid_strip_dashes('b22eb45a-c983-11ec-a05a-80fa5b0d7c77')
 'b22eb45ac98311eca05a80fa5b0d7c77'
+```
+
+### version_compare
+Compares to version strings and returns if the first is less than (-1), equal to (0) or greater than (1) the second
+```python
+>>> from strings import version_compare
+>>> version_compare('1.0.1', '1.0')
+1
+>>> version_compare('1.0.1', '1.0.1')
+0
+>>> version_compare('1.0.1', '1.1')
+-1
 ```
