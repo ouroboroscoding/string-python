@@ -11,13 +11,16 @@ __created__		= "2018-11-11"
 
 # Limit exports
 __all__ = [
-	'bytes_human', 'digits', 'normalize', 'random', 'strtr', 'to_bool',
-	'uuid_add_dashes', 'uuid_strip_dashes'
+	'bytes_human', 'digits', 'from_file', 'normalize', 'random', 'strtr',
+	'to_bool', 'to_file', 'uuid_add_dashes', 'uuid_strip_dashes',
+	'version_compare'
 ]
 
 # Python imports
+import os as _os
 from random import randint as _randint
 import sys as _sys
+from typing import Literal
 
 def bytes_human(num):
 	"""Bytes Human
@@ -63,6 +66,28 @@ def digits(val):
 
 	# Return the new string
 	return ''.join(lRet)
+
+def from_file(
+	filepath: str,
+	_default: str | None = None
+) -> str | None:
+	"""From File
+
+	Returns an entire file as a single string, returns None if the file doesn't
+	exist
+
+	Arguments:
+		filepath (str): The path to the file to load
+
+	Returns:
+		str | None
+	"""
+
+	try:
+		with open(filepath, 'r') as oF:
+			return oF.read()
+	except FileNotFoundError as e:
+		return _default
 
 def normalize(val):
 	"""Normalize
@@ -361,7 +386,7 @@ def random(length = 8, characters = ['aZ'], duplicates = True):
 
 		# If it's empty
 		if len(characters) == 0:
-			raise ValueError('characters must contain at least one set name in %s' % sys._getframe().f_code.co_name)
+			raise ValueError('characters must contain at least one set name in %s' % _sys._getframe().f_code.co_name)
 
 		# Go through the list of passed characters
 		for s in characters:
@@ -474,6 +499,35 @@ def to_bool(t):
 		_sys._getframe().f_code.co_name
 	))
 
+def to_file(
+	filepath: str,
+	text: str,
+	create_path: bool = False
+) -> bool:
+	"""To File
+
+	Stores a string to a file, overwriting the contents
+
+	Arguments:
+		filepath (str): The path to the file to store the string in
+		text (str): The text to write to the file
+		create (bool): Optional, if true, path is created if it doesn't exist
+
+	Returns:
+		bool
+	"""
+
+	try:
+		with open(filepath, 'w') as oF:
+			oF.write(text)
+	except FileNotFoundError as e:
+		_os.makedirs(_os.path.dirname(filepath), exist_ok=True)
+		with open(filepath, 'w') as oF:
+			oF.write(text)
+
+	# return OK
+	return True
+
 def uuid_add_dashes(uuid):
 	"""UUID Add Dashes
 
@@ -511,3 +565,51 @@ def uuid_strip_dashes(uuid):
 		uuid[19:23],
 		uuid[24:36]
 	)
+
+def version_compare(
+	a: str,
+	b: str
+) -> Literal[-1] | Literal[0] | Literal[1]:
+	"""Version Compare
+
+	Compares two version strings and returns whether the first one is less \
+	than (-1), equal (0), or greater than (1)
+
+	Arguments:
+		a (str): The first version
+		b (str): The second version
+
+	Returns:
+		-1 | 0 | 1
+	"""
+
+	# First, convert both strings to int lists
+	lA = [int(s) for s in a.split('.')]
+	lB = [int(s) for s in b.split('.')]
+
+	# Get the lengths of each
+	iA = len(lA)
+	iB = len(lB)
+	iLength = iA
+
+	# Make sure the lists are equal in length
+	if iA < iB:
+		for i in range(iB - iA):
+			lA.append(0)
+		iLength = iB
+	elif iA > iB:
+		for i in range(iA - iB):
+			lB.append(0)
+
+	# Go through the range
+	for i in range(iLength):
+
+		# If the values are the same
+		if lA[i] == lB[i]:
+			continue
+
+		# Return if A is less than or greater than
+		return lA[i] < lB[i] and -1 or 1
+
+	# No difference
+	return 0
