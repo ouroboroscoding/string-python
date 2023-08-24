@@ -356,7 +356,7 @@ def random(length = 8, characters = ['aZ'], duplicates = True):
 	HTML/URLs
 
 	Examples:
-		> random(8, '_0x')
+		> random(8, ['0x'])
 		"baadbeef"
 
 	Arguments:
