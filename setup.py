@@ -4,8 +4,8 @@ with open('README.md', 'r') as oF:
 	long_description=oF.read()
 
 setup(
-	name='Strings-OC',
-	version='1.0.1',
+	name='strings-oc',
+	version='1.0.2',
 	description='Generic functions for dealing with and generating strings',
 	long_description=long_description,
 	long_description_content_type='text/markdown',

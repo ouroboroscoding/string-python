@@ -20,7 +20,7 @@ __all__ = [
 import os as _os
 from random import randint as _randint
 import sys as _sys
-from typing import Literal
+from typing import List, Literal
 
 def bytes_human(num):
 	"""Bytes Human
@@ -88,6 +88,34 @@ def from_file(
 			return oF.read()
 	except FileNotFoundError as e:
 		return _default
+
+def join(o: dict, l: List[str], separator: str = ' ') -> str:
+	"""Join
+
+	Creates a single string from a list of members that may or may not exist \
+	in the passed object
+
+	Arguments:
+		o (dict): The object to pull members from
+		l (str[]): The list of members, in order, to join together
+		separator (str): Optional, char/string to join with, defaults to space
+
+	Returns:
+		str
+	"""
+
+	# Init the array of found members
+	lFound: List[str] = []
+
+	# Go through each member passed
+	for s in l:
+
+		# If it exists
+		if s in o and isinstance(o[s], str):
+			lFound.append(o[s])
+
+	# Join and return
+	return separator.join(lFound)
 
 def normalize(val):
 	"""Normalize
