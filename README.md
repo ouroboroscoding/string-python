@@ -1,14 +1,14 @@
 # Strings by Ouroboros Coding
-[![pypi version](https://img.shields.io/pypi/v/Strings-OC.svg)](https://pypi.org/project/Strings-OC) ![MIT License](https://img.shields.io/pypi/l/Strings-OC.svg)
+[![pypi version](https://img.shields.io/pypi/v/strings-oc.svg)](https://pypi.org/project/strings-oc) ![MIT License](https://img.shields.io/pypi/l/strings-oc.svg)
 
 Generic functions for dealing with and generating strings
 
 ## Requires
-Strings-OC requires python 3.10 or higher
+strings-oc requires python 3.10 or higher
 
 ## Installation
 ```bash
-pip install Strings-OC
+pip install strings-oc
 ```
 
 ## Functions
@@ -61,6 +61,17 @@ If the file doesn't exist, `from_file` returns `None`. This can be changed by pa
 >>> from strings import from_file
 >>> from_file('doesnotexist', '1.0.0')
 '1.0.0'
+```
+
+### join
+`join` creates a single string from a list of keys that may or may not exist in the passed dict.
+```python
+>>> from strings import join
+>>> d = { 'title': 'Mr.', 'first': 'Homer', 'last': 'Simpson' }
+>>> join(d, ['title', 'first', 'last', 'post'])
+'Mr. Homer Simpson'
+>>> d = { 'title': 'Dr.', 'first': 'Julius', 'last': 'Hibbert', 'post': 'MD' }
+'Dr. Julius Hibbert MD'
 ```
 
 ### normalize
@@ -130,6 +141,7 @@ Returns a random string based on set parameters.
 | !* | !@$%^*-_. |
 
 \* sets denote removal of characters that might confuse, either systems or humans. &, #, etc for the former, and I, l, O, etc for the latter.
+
 #### duplicates
 By default `random` allows duplicate characters in a string, and doesn't see any issue with that. But it's possible you have an issue with it, and want a string made up completely of non-repeating characters. If so, set `duplicates` to `False`.
 ```python
@@ -140,6 +152,16 @@ By default `random` allows duplicate characters in a string, and doesn't see any
 >>> random(27, ['az'], False)
 ValueError: Can not generate random string with no duplicates from the given characters "abcdefghijklmnopqrstuvwxyz" in random
 ```
+
+### shorten_filename
+`shorten_filename` allows for truncating filenames without losing or damaging the extension of the file. Useful for when you need to add a filename for an uploaded file to a database and you are limited by the length of the field.
+```python
+>>> from strings import shorten_filename
+>>> shorten_filename('hello_there_my_friend.txt', 16)
+'hello_there_.txt'
+```
+As you can see, the name part of the file is shortened, but the .txt stays intact, avoiding potential problems with mime lookup.
+
 ### strtr
 `strtr` is a partial copy of the [PHP functon](https://www.php.net/manual/en/function.strtr.php) of the same name. This version does not support the singular use of one $from, and one $to, but the same can be achieved by using a dict with a single key and value. The primary purpose of this function is to be the actual workhorse of the `normalize` function, but there's no reason other people can't make use of it.
 ```python

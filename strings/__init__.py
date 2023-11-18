@@ -11,15 +11,15 @@ __created__		= "2018-11-11"
 
 # Limit exports
 __all__ = [
-	'bytes_human', 'digits', 'from_file', 'normalize', 'random', 'strtr',
-	'to_bool', 'to_file', 'uuid_add_dashes', 'uuid_strip_dashes',
-	'version_compare'
+	'bytes_human', 'digits', 'from_file', 'join', 'normalize', 'random',
+	'shorten_filename', 'strtr', 'to_bool', 'to_file', 'uuid_add_dashes',
+	'uuid_strip_dashes', 'version_compare'
 ]
 
 # Python imports
-import os as _os
-from random import randint as _randint
-import sys as _sys
+import os
+from random import randint
+import sys
 from typing import List, Literal
 
 def bytes_human(num):
@@ -92,8 +92,8 @@ def from_file(
 def join(o: dict, l: List[str], separator: str = ' ') -> str:
 	"""Join
 
-	Creates a single string from a list of members that may or may not exist \
-	in the passed object
+	Creates a single string from a list of keys that may or may not exist in \
+	the passed dict
 
 	Arguments:
 		o (dict): The object to pull members from
@@ -414,7 +414,7 @@ def random(length = 8, characters = ['aZ'], duplicates = True):
 
 		# If it's empty
 		if len(characters) == 0:
-			raise ValueError('characters must contain at least one set name in %s' % _sys._getframe().f_code.co_name)
+			raise ValueError('characters must contain at least one set name in %s' % sys._getframe().f_code.co_name)
 
 		# Go through the list of passed characters
 		for s in characters:
@@ -429,7 +429,7 @@ def random(length = 8, characters = ['aZ'], duplicates = True):
 			except KeyError:
 				raise ValueError('%s is not a valid set for %s' % (
 					s,
-					_sys._getframe().f_code.co_name
+					sys._getframe().f_code.co_name
 				))
 
 	# Else, the value of sets is invalid
@@ -441,7 +441,7 @@ def random(length = 8, characters = ['aZ'], duplicates = True):
 	if not duplicates and len(sChars) < length:
 		raise ValueError('Can not generate random string with no duplicates from the given characters "%s" in %s' % (
 			sChars,
-			_sys._getframe().f_code.co_name
+			sys._getframe().f_code.co_name
 		))
 
 	# Init the return variable
@@ -453,7 +453,7 @@ def random(length = 8, characters = ['aZ'], duplicates = True):
 	# Create a [length] of random character
 	i = 0
 	while i < length:
-		sFound = sChars[_randint(0, iCount - 1)]
+		sFound = sChars[randint(0, iCount - 1)]
 		bDup = sText.find(sFound)
 
 		if duplicates or bDup == -1:
@@ -462,6 +462,38 @@ def random(length = 8, characters = ['aZ'], duplicates = True):
 
 	# Return the generated string
 	return sText
+
+def shorten_filename(text: str, length: int) -> str:
+	"""Shorten Filename
+
+	Makes sure the name of a file is truncated to fit the length while also \
+	making sure not to damage or remove the extension
+
+	Arguments:
+		text (str): The text to truncate
+		length (uint): The maximum length of the string
+
+	Returns:
+		str
+	"""
+
+	# If the length of the string is equal or less than the length, do nothing
+	if len(text) <= length:
+		return text
+
+	# Get the last period
+	iPeriod = text.rfind('.')
+
+	# If there isn't one, just return the length
+	if iPeriod == -1:
+		return text[:length]
+
+	# Store the extension and name separately
+	sExt = text[iPeriod:]
+	sName = text[:iPeriod]
+
+	# Combine the two and return
+	return sName[:(length - len(sExt))] + sExt
 
 def strtr(text, table):
 	"""String Translate
@@ -524,7 +556,7 @@ def to_bool(t):
 	# Raise an exception
 	raise ValueError('"%s" is not a valid boolean representation in %s' % (
 		t,
-		_sys._getframe().f_code.co_name
+		sys._getframe().f_code.co_name
 	))
 
 def to_file(
@@ -549,7 +581,7 @@ def to_file(
 		with open(filepath, 'w') as oF:
 			oF.write(text)
 	except FileNotFoundError as e:
-		_os.makedirs(_os.path.dirname(filepath), exist_ok=True)
+		os.makedirs(os.path.dirname(filepath), exist_ok=True)
 		with open(filepath, 'w') as oF:
 			oF.write(text)
 
