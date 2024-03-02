@@ -141,7 +141,6 @@ Returns a random string based on set parameters.
 | !* | !@$%^*-_. |
 
 \* sets denote removal of characters that might confuse, either systems or humans. &, #, etc for the former, and I, l, O, etc for the latter.
-
 #### duplicates
 By default `random` allows duplicate characters in a string, and doesn't see any issue with that. But it's possible you have an issue with it, and want a string made up completely of non-repeating characters. If so, set `duplicates` to `False`.
 ```python
@@ -161,6 +160,16 @@ ValueError: Can not generate random string with no duplicates from the given cha
 'hello_there_.txt'
 ```
 As you can see, the name part of the file is shortened, but the .txt stays intact, avoiding potential problems with mime lookup.
+
+### strip_html
+`strip_html` takes an HTML string and removes all the tags/elements while retaining the cdata. Useful for content that needs to be displayed without formatting.
+```python
+>>> from strings import strip_html
+>>> strip_html('<p>This is a test</p>')
+'This is a test'
+>>> strip_html('<p>Wanna see some <b>BOLD</b> text?</p>')
+'Wanna see some BOLD text?'
+```
 
 ### strtr
 `strtr` is a partial copy of the [PHP functon](https://www.php.net/manual/en/function.strtr.php) of the same name. This version does not support the singular use of one $from, and one $to, but the same can be achieved by using a dict with a single key and value. The primary purpose of this function is to be the actual workhorse of the `normalize` function, but there's no reason other people can't make use of it.
