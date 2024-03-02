@@ -5,7 +5,7 @@ with open('README.md', 'r') as oF:
 
 setup(
 	name='strings-oc',
-	version='1.0.4',
+	version='1.0.5',
 	description='Generic functions for dealing with and generating strings',
 	long_description=long_description,
 	long_description_content_type='text/markdown',
