@@ -12,11 +12,13 @@ __created__		= "2018-11-11"
 # Limit exports
 __all__ = [
 	'bytes_human', 'digits', 'from_file', 'join', 'normalize', 'random',
-	'shorten_filename', 'strtr', 'to_bool', 'to_file', 'uuid_add_dashes',
-	'uuid_strip_dashes', 'version_compare'
+	'shorten_filename', 'strip_html', 'strtr', 'to_bool', 'to_file',
+	'uuid_add_dashes', 'uuid_strip_dashes', 'version_compare'
 ]
 
 # Python imports
+from html.parser import HTMLParser
+from io import StringIO
 import os
 from random import randint
 import sys
@@ -494,6 +496,75 @@ def shorten_filename(text: str, length: int) -> str:
 
 	# Combine the two and return
 	return sName[:(length - len(sExt))] + sExt
+
+class _StripHTML(HTMLParser):
+	"""Strip Tags
+
+	Extends HTMLParser in order to strip the tags from a string
+
+	Extends:
+		HTMLParser
+	"""
+
+	def __init__(self):
+		"""Constructor
+
+		Creates a new instance and returns it
+
+		Returns:
+			_StripTags
+		"""
+
+		# Call the parent constructor
+		super().__init__()
+
+		# Reset the HTMLParser instance
+		self.reset()
+
+		# Set flags
+		self.convert_charrefs = True
+		self.strict = False
+
+		# Create a new string file
+		self.text = StringIO()
+
+	def handle_data(self, d: str):
+		"""Handle Data
+
+		Write new data to the text
+
+		Arguments:
+			d (str): The data to write
+
+		Returns:
+			None
+		"""
+		self.text.write(d)
+
+	def get_data(self) -> str:
+		"""Get Data
+
+		Return the data that's been stripped of tags
+
+		Return:
+			str
+		"""
+		return self.text.getvalue()
+
+def strip_html(html: str) -> str:
+	"""Strip Tags
+
+	Takes a string with HTML and returns just the CDATA
+
+	Arguments:
+		html (str): The HTML to strip of tags and return
+
+	Returns:
+		str
+	"""
+	s = _StripHTML()
+	s.feed(html)
+	return s.get_data()
 
 def strtr(text, table):
 	"""String Translate
