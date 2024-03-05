@@ -25,6 +25,18 @@ Returns a human readable string using the number passed as a representation of b
 '1.9GiB'
 ```
 
+### cut
+Shortens a string so that it ends on a full word instead of halfway between words.
+```python
+>>> from strings import cut
+>>> cut('12345 7890', 8)
+'12345...'
+>>> cut('12345 7890', 8, '…')
+'12345…'
+>>> cut('Hello, my name is Frank', 16, '…')
+'Hello, my name…'
+```
+
 ### digits
 Returns only the digits, i.e. the numeric characters, in the given string as a new string. Be careful, as this does not return numbers, but number characters, and will strip out valid float/decimal characters
 ```python
