@@ -21,6 +21,7 @@ from html.parser import HTMLParser
 from io import StringIO
 import os
 from random import randint
+import re
 import sys
 from typing import List, Literal
 
@@ -45,6 +46,37 @@ def bytes_human(num):
 		num /= 1024.0
 
 	return '%.1fYiB' % num
+
+def cut(text: str, max_chars: int, ellipsis: str = '...'):
+	"""Cut
+
+	Cuts text to a specific length without cutting words in half
+
+	Args:
+		text (str): The text to cut
+		max_chars (uint): The maximum number of characters to show
+		ellipsis (str): The text to use as an ellipsis
+
+	Returns:
+		str
+	"""
+
+	# If max_chars is negative
+	if max_chars < 0:
+		raise ValueError('max_chars', 'must be an unsigned integer')
+
+	# If the string is already short enough, just return it
+	if len(text) < max_chars:
+		return text
+
+	# Run the regex based on the length required and the ellipsis length
+	aM = re.search(
+		'^(.{0,%d})\\b' % (max_chars - len(ellipsis)),
+		text
+	)
+
+	# Return the shortened string
+	return aM.group(0).strip() + ellipsis
 
 def digits(val):
 	"""Digits
