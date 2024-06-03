@@ -22,7 +22,7 @@ from io import StringIO
 import os
 from random import randint
 import re
-import sys
+from sys import _getframe, stderr
 from typing import List, Literal
 
 def bytes_human(num):
@@ -72,8 +72,17 @@ def cut(text: str, max_chars: int, ellipsis: str = '...'):
 	# Run the regex based on the length required and the ellipsis length
 	aM = re.search(
 		'^(.{0,%d})\\b' % (max_chars - len(ellipsis)),
-		text
+		text.strip(),
+		re.DOTALL
 	)
+
+	# If we didn't get a match
+	if not aM:
+		print(
+			'strings-oc.strings.cut: can\'t match with\n%s' % text,
+			file = stderr
+		)
+		return text
 
 	# Return the shortened string
 	return aM.group(0).strip() + ellipsis
@@ -448,7 +457,7 @@ def random(length = 8, characters = ['aZ'], duplicates = True):
 
 		# If it's empty
 		if len(characters) == 0:
-			raise ValueError('characters must contain at least one set name in %s' % sys._getframe().f_code.co_name)
+			raise ValueError('characters must contain at least one set name in %s' % _getframe().f_code.co_name)
 
 		# Go through the list of passed characters
 		for s in characters:
@@ -463,7 +472,7 @@ def random(length = 8, characters = ['aZ'], duplicates = True):
 			except KeyError:
 				raise ValueError('%s is not a valid set for %s' % (
 					s,
-					sys._getframe().f_code.co_name
+					_getframe().f_code.co_name
 				))
 
 	# Else, the value of sets is invalid
@@ -475,7 +484,7 @@ def random(length = 8, characters = ['aZ'], duplicates = True):
 	if not duplicates and len(sChars) < length:
 		raise ValueError('Can not generate random string with no duplicates from the given characters "%s" in %s' % (
 			sChars,
-			sys._getframe().f_code.co_name
+			_getframe().f_code.co_name
 		))
 
 	# Init the return variable
@@ -659,7 +668,7 @@ def to_bool(t):
 	# Raise an exception
 	raise ValueError('"%s" is not a valid boolean representation in %s' % (
 		t,
-		sys._getframe().f_code.co_name
+		_getframe().f_code.co_name
 	))
 
 def to_file(
